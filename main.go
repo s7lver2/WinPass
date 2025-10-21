@@ -68,6 +68,9 @@ func createBatFile(w fyne.Window, exePath string) (bool, string) {
 func createGeneratorTab(w fyne.Window, pathEntry *widget.Entry, executeButton *widget.Button) fyne.CanvasObject {
 	var selectedExePath string // Ruta del .exe seleccionado en esta pestaña
 
+	// Etiqueta dinámica para mostrar la ruta de guardado
+	savePathLabel := widget.NewLabel("Ruta de guardado: No se ha seleccionado un .exe")
+
 	// Botón principal para generar el archivo .bat
 	generateButton := widget.NewButton("Generar Archivo .bat", func() {
 		success, path := createBatFile(w, selectedExePath)
@@ -90,6 +93,9 @@ func createGeneratorTab(w fyne.Window, pathEntry *widget.Entry, executeButton *w
 			// Calcular la ruta del .bat esperado para la pre-ejecución
 			basePath := strings.TrimSuffix(selectedExePath, filepath.Ext(selectedExePath))
 			expectedBatPath := basePath + "_RunAsInvoker.bat"
+
+			// Actualiza la etiqueta de ruta de guardado para el usuario
+			savePathLabel.SetText(fmt.Sprintf("Ruta de guardado:\n%s", filepath.FromSlash(expectedBatPath)))
 
 			// Si el .bat esperado existe, actualizamos el estado de ejecución
 			if _, err := os.Stat(filepath.FromSlash(expectedBatPath)); err == nil {
@@ -118,7 +124,7 @@ func createGeneratorTab(w fyne.Window, pathEntry *widget.Entry, executeButton *w
 		widget.NewLabel("Paso 2: Genera el archivo .bat en la misma carpeta."),
 		generateButton,
 		widget.NewSeparator(),
-		widget.NewLabel("El archivo .bat se llamará: [Nombre_EXE]_RunAsInvoker.bat"),
+		savePathLabel, // Muestra la ruta de guardado dinámica
 	)
 }
 
@@ -209,10 +215,10 @@ func main() {
 	// ------------------------------------------
 
 	tabs := container.NewAppTabs(
-		container.NewTabItemWithIcon("Generar", theme.ContentAddIcon(),
+		container.NewTabItemWithIcon("", theme.ContentAddIcon(), // Título vacío para mostrar solo el icono
 			container.NewPadded(createGeneratorTab(w, pathEntry, executeButton)),
 		),
-		container.NewTabItemWithIcon("Ejecutar", theme.MediaPlayIcon(),
+		container.NewTabItemWithIcon("", theme.MediaPlayIcon(), // Título vacío para mostrar solo el icono
 			container.NewPadded(createExecutionTab(w, pathEntry, executeButton)),
 		),
 		// Se pueden añadir más pestañas aquí si se necesita, por ejemplo, Ayuda/Acerca de
