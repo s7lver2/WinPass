@@ -14,24 +14,18 @@ import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
-	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/storage"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 )
 
 // Constante que define el contenido de la plantilla del archivo .bat
-// FIX DEFINITIVO: Cambiamos %~dp0 por %%~dp0. En Go, un % literal debe ser escapado como %%
-// cuando se usa con fmt.Sprintf. Esto evita la corrupción del formato.
+// Usamos %%~dp0 para escapar el % en Go y que el archivo final contenga %~dp0
 const batContent = `@echo off
 Set __COMPAT_LAYER=RunAsInvoker
-Start "" "%%~dp0%s"` // Usamos %%~dp0 para que el archivo final contenga %~dp0
+Start "" "%%~dp0%s"`
 
-// Definición del icono de la aplicación.
-var Icon = theme.FolderOpenIcon()
-
-// Variable de estado para la ruta final a ejecutar, puede ser asignada
-// por `createBatFile` o por la selección manual del usuario.
+// Variable de estado para la ruta final a ejecutar.
 var pathForExecution string = ""
 
 // showMessage muestra un cuadro de diálogo simple para notificaciones
@@ -52,13 +46,11 @@ func createBatFile(w fyne.Window, exePath string) (bool, string) {
 	exeName := filepath.Base(exePath)
 
 	// 2. Definir la ruta del nuevo archivo .bat
-	// Elimina la extensión .exe para nombrar el .bat
 	baseName := exeName[:len(exeName)-len(filepath.Ext(exeName))]
 	batFileName := fmt.Sprintf("%s_RunAsInvoker.bat", baseName)
 	batPath := filepath.Join(dirPath, batFileName)
 
 	// 3. Formatear el contenido
-	// Se pasa el nombre del ejecutable. El "%%~dp0" en batContent garantiza el %~dp0 final.
 	content := fmt.Sprintf(batContent, exeName)
 
 	// 4. Escribir el contenido en el nuevo archivo .bat
@@ -69,104 +61,45 @@ func createBatFile(w fyne.Window, exePath string) (bool, string) {
 	}
 
 	// 5. Éxito
-	// Devolvemos la ruta final del BAT
 	return true, batPath
 }
 
-func main() {
-	a := app.New()
-	w := a.NewWindow("Generador BAT (RunAsInvoker)")
-	w.Resize(fyne.NewSize(750, 400))
-	w.SetFixedSize(true)
-
-	var selectedExePath string // Ruta del .exe seleccionado por el diálogo
-
-	pathEntry := widget.NewEntry()
-	pathEntry.PlaceHolder = "Ruta del archivo .exe o .bat a ejecutar..."
-	pathEntry.Disable()
-
-	// Botón para ejecutar el .bat (deshabilitado inicialmente)
-	executeButton := widget.NewButtonWithIcon("Ejecutar .bat", theme.MediaPlayIcon(), func() {
-		if pathForExecution == "" {
-			showMessage(w, "Error", "Primero debes seleccionar un archivo .exe o un .bat para ejecutar.")
-			return
-		}
-
-		// ******* LÓGICA DE EJECUCIÓN (USANDO pathForExecution) *******
-
-		// 1. Tomar la ruta de ejecución
-		finalPath := pathForExecution
-
-		// 2. CORRECCIÓN URI A PATH NATIVO: LIMPIEZA CRÍTICA
-
-		// Convertir separadores de Unix (/) a Windows (\).
-		// Si el path de fyne es "/C:/...", esto resulta en "\C:\...".
-		finalPath = filepath.FromSlash(finalPath)
-
-		// Si la ruta comienza con una barra invertida, y luego sigue
-		// la letra de la unidad (e.g., "\C:\..."), eliminar la primera barra.
-		// Esto corrige la conversión de URI a path nativo de Fyne.
-		if len(finalPath) > 1 && finalPath[0] == '\\' && finalPath[2] == ':' {
-			finalPath = finalPath[1:] // Ahora: "C:\Users..."
-		}
-
-		// Aseguramos que la letra de la unidad esté en mayúsculas (C: en lugar de c:)
-		if len(finalPath) > 1 && finalPath[1] == ':' {
-			finalPath = strings.ToUpper(finalPath[:1]) + finalPath[1:]
-		}
-
-		// Línea de Debug: Muestra la ruta limpia que se está intentando ejecutar
-		fmt.Println("Intentando ejecutar con ruta (debug):", finalPath)
-
-		// ******* EJECUCIÓN MEJORADA CON EXPLORER.EXE *******
-		// La forma más robusta de hacer que Windows abra un archivo asociado (.bat)
-		// sin problemas de sintaxis del shell es usando explorer.exe
-		cmd := exec.Command("explorer", finalPath)
-
-		// Intentamos iniciar el proceso
-		if err := cmd.Start(); err != nil {
-			// Si hay un error, lo mostramos con el path exacto intentado.
-			showMessage(w, "Error de Ejecución", fmt.Sprintf("No se pudo iniciar el archivo BAT usando explorer.exe. Compruebe la ruta en la consola. Error: %v", err))
-			return
-		}
-
-		// Si llega aquí, asumimos que el comando start se lanzó correctamente.
-		showMessage(w, "Lanzamiento", "El archivo .bat se ha lanzado correctamente.")
-		// *************************
-	})
-	executeButton.Disable() // Deshabilitado al inicio
+// createGeneratorTab construye el contenido de la pestaña "Generar BAT"
+func createGeneratorTab(w fyne.Window, pathEntry *widget.Entry, executeButton *widget.Button) fyne.CanvasObject {
+	var selectedExePath string // Ruta del .exe seleccionado en esta pestaña
 
 	// Botón principal para generar el archivo .bat
 	generateButton := widget.NewButton("Generar Archivo .bat", func() {
-		success, path := createBatFile(w, selectedExePath) // Usamos selectedExePath
+		success, path := createBatFile(w, selectedExePath)
 		if success {
-			// ** ACTUALIZAR ESTADO DE EJECUCIÓN: Se usará la ruta recién generada **
 			pathForExecution = path
-			pathEntry.SetText(path) // Actualiza el campo para mostrar la ruta BAT generada
-			executeButton.Enable()
-			showMessage(w, "Éxito", fmt.Sprintf("¡Archivo .bat creado con éxito!\nAhora puedes ejecutarlo directamente."))
+			pathEntry.SetText(path) // Muestra la ruta generada en el campo principal
+			executeButton.Enable()  // Habilita el botón de ejecución
+			showMessage(w, "Éxito", fmt.Sprintf("¡Archivo .bat creado con éxito!\nAhora puedes ejecutarlo en la pestaña 'Ejecutar'."))
 		}
 	})
 
-	// Botón para seleccionar el archivo .exe (mantiene la lógica de creación)
-	selectExeButton := widget.NewButtonWithIcon("Seleccionar Archivo .exe", theme.FolderOpenIcon(), func() {
+	// Botón para seleccionar el archivo .exe
+	selectExeButton := widget.NewButtonWithIcon("Seleccionar Archivo .exe", theme.FileIcon(), func() {
 		fd := dialog.NewFileOpen(func(read fyne.URIReadCloser, err error) {
 			if err != nil || read == nil {
 				return
 			}
 			selectedExePath = read.URI().Path()
-			pathEntry.SetText(selectedExePath)
 
-			// Calcular la ruta del .bat esperado
+			// Calcular la ruta del .bat esperado para la pre-ejecución
 			basePath := strings.TrimSuffix(selectedExePath, filepath.Ext(selectedExePath))
 			expectedBatPath := basePath + "_RunAsInvoker.bat"
 
-			// Si el .bat esperado existe, prepáralo para la ejecución
+			// Si el .bat esperado existe, actualizamos el estado de ejecución
 			if _, err := os.Stat(filepath.FromSlash(expectedBatPath)); err == nil {
 				pathForExecution = expectedBatPath
+				pathEntry.SetText(expectedBatPath)
 				executeButton.Enable()
 			} else {
+				// Si no existe, preparamos la ejecución para la ruta del .exe (para la generación)
 				pathForExecution = ""
+				pathEntry.SetText(selectedExePath)
 				executeButton.Disable()
 			}
 
@@ -176,8 +109,23 @@ func main() {
 		fd.Show()
 	})
 
+	return container.NewVBox(
+		widget.NewLabelWithStyle("GENERADOR BAT", fyne.TextAlignCenter, fyne.TextStyle{Bold: true}),
+		widget.NewSeparator(),
+		widget.NewLabel("Paso 1: Selecciona el archivo .exe que quieres modificar."),
+		selectExeButton,
+		widget.NewSeparator(),
+		widget.NewLabel("Paso 2: Genera el archivo .bat en la misma carpeta."),
+		generateButton,
+		widget.NewSeparator(),
+		widget.NewLabel("El archivo .bat se llamará: [Nombre_EXE]_RunAsInvoker.bat"),
+	)
+}
+
+// createExecutionTab construye el contenido de la pestaña "Ejecutar BAT"
+func createExecutionTab(w fyne.Window, pathEntry *widget.Entry, executeButton *widget.Button) fyne.CanvasObject {
 	// Botón para seleccionar un archivo .bat manualmente
-	selectBatButton := widget.NewButtonWithIcon("Seleccionar .bat", theme.FileIcon(), func() {
+	selectBatButton := widget.NewButtonWithIcon("Seleccionar .bat manualmente", theme.DocumentIcon(), func() {
 		fd := dialog.NewFileOpen(func(read fyne.URIReadCloser, err error) {
 			if err != nil || read == nil {
 				return
@@ -185,10 +133,8 @@ func main() {
 			batPath := read.URI().Path()
 			pathEntry.SetText(batPath)
 
-			// ** ACTUALIZAR ESTADO DE EJECUCIÓN: Se usará la ruta seleccionada **
-			pathForExecution = batPath
-			executeButton.Enable()
-			selectedExePath = "" // Limpiar la ruta del exe para evitar confusiones en la generación
+			pathForExecution = batPath // Establece la ruta para la ejecución
+			executeButton.Enable()     // Habilita la ejecución
 
 		}, w)
 
@@ -196,29 +142,85 @@ func main() {
 		fd.Show()
 	})
 
-	// Contenedor de botones de selección
-	selectionButtons := container.NewHBox(
-		selectExeButton,
-		selectBatButton,
-	)
-
-	// Contenedor de botones de acción (Generar/Ejecutar)
-	actionButtons := container.NewHBox(
-		layout.NewSpacer(), // Empujar los botones hacia el centro
-		generateButton,
-		executeButton,
-		layout.NewSpacer(), // Empujar los botones hacia el centro
-	)
-
-	// Contenido principal
-	content := container.New(layout.NewVBoxLayout(),
-		widget.NewLabel("1. Selecciona el archivo .exe para generar (o .bat para ejecutar):"),
-		container.New(layout.NewBorderLayout(nil, nil, nil, selectionButtons),
-			selectionButtons, pathEntry),
+	return container.NewVBox(
+		widget.NewLabelWithStyle("EJECUTAR ARCHIVO", fyne.TextAlignCenter, fyne.TextStyle{Bold: true}),
 		widget.NewSeparator(),
-		actionButtons,
+		widget.NewLabel("Paso 1: Selecciona el archivo .bat que quieres ejecutar."),
+		selectBatButton,
+		widget.NewSeparator(),
+		widget.NewLabel("Paso 2: Haz clic en el botón de abajo."),
+		executeButton,
+		widget.NewSeparator(),
+		widget.NewLabel("Ruta actual a ejecutar:"),
+		pathEntry,
+	)
+}
+
+func main() {
+	a := app.New()
+	w := a.NewWindow("Generador BAT (RunAsInvoker)")
+	w.Resize(fyne.NewSize(750, 400))
+	w.SetFixedSize(true)
+
+	// Campos de entrada y botones que se comparten entre pestañas
+	pathEntry := widget.NewEntry()
+	pathEntry.PlaceHolder = "Ruta del archivo .exe o .bat a ejecutar..."
+	pathEntry.Disable() // Siempre desactivado para evitar edición manual y corrupción de ruta
+
+	// Lógica de ejecución, compartida por ambas pestañas
+	executeButton := widget.NewButtonWithIcon("Ejecutar .bat", theme.MediaPlayIcon(), func() {
+		if pathForExecution == "" {
+			showMessage(w, "Error", "Primero debes seleccionar un archivo .exe o un .bat para ejecutar.")
+			return
+		}
+
+		// ******* LÓGICA DE EJECUCIÓN (USANDO pathForExecution) *******
+		finalPath := pathForExecution
+
+		// 2. CORRECCIÓN URI A PATH NATIVO: LIMPIEZA CRÍTICA
+		finalPath = filepath.FromSlash(finalPath)
+
+		if len(finalPath) > 1 && finalPath[0] == '\\' && finalPath[2] == ':' {
+			finalPath = finalPath[1:]
+		}
+
+		if len(finalPath) > 1 && finalPath[1] == ':' {
+			finalPath = strings.ToUpper(finalPath[:1]) + finalPath[1:]
+		}
+
+		// Línea de Debug: Muestra la ruta limpia que se está intentando ejecutar
+		fmt.Println("Intentando ejecutar con ruta (debug):", finalPath)
+
+		// ******* EJECUCIÓN MEJORADA CON EXPLORER.EXE *******
+		cmd := exec.Command("explorer", finalPath)
+
+		if err := cmd.Start(); err != nil {
+			showMessage(w, "Error de Ejecución", fmt.Sprintf("No se pudo iniciar el archivo BAT usando explorer.exe. Error: %v", err))
+			return
+		}
+
+		showMessage(w, "Lanzamiento", "El archivo .bat se ha lanzado correctamente.")
+		// *************************
+	})
+	executeButton.Disable() // Deshabilitado al inicio
+
+	// ------------------------------------------
+	// 				CONFIGURACIÓN DE PESTAÑAS
+	// ------------------------------------------
+
+	tabs := container.NewAppTabs(
+		container.NewTabItemWithIcon("Generar", theme.ContentAddIcon(),
+			container.NewPadded(createGeneratorTab(w, pathEntry, executeButton)),
+		),
+		container.NewTabItemWithIcon("Ejecutar", theme.MediaPlayIcon(),
+			container.NewPadded(createExecutionTab(w, pathEntry, executeButton)),
+		),
+		// Se pueden añadir más pestañas aquí si se necesita, por ejemplo, Ayuda/Acerca de
 	)
 
-	w.SetContent(container.NewPadded(content))
+	// Hacemos que los tabs se muestren en el lateral (izquierda)
+	tabs.SetTabLocation(container.TabLocationLeading)
+
+	w.SetContent(tabs)
 	w.ShowAndRun()
 }
