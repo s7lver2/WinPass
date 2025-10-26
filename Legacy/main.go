@@ -12,7 +12,7 @@ import (
 	"golang.org/x/sys/windows"
 )
 
-// Estructura OPENFILENAME para diálogos de archivo (versión mínima funcional)
+// Estructura OPENFILENAME completa para compatibilidad con Windows (incluyendo campos para WINVER >= 0x0400)
 type OPENFILENAME struct {
 	lStructSize       uint32
 	hwndOwner         uintptr
@@ -34,6 +34,9 @@ type OPENFILENAME struct {
 	lCustData         uintptr
 	lpfnHook          uintptr
 	lpTemplateName    *uint16
+	pvReserved        uintptr
+	dwReserved        uint32
+	FlagsEx           uint32
 }
 
 func showMessage(title, message string) {
@@ -63,7 +66,10 @@ func createBatFile(exePath string) (bool, string) {
 
 func openFileDialog(filterDesc, filterPat string) string {
 	filterStr := filterDesc + "\x00" + filterPat + "\x00All Files\x00*.*\x00\x00"
-	filter16, _ := syscall.UTF16FromString(filterStr)
+	filter16, err := syscall.UTF16FromString(filterStr)
+	if err != nil || len(filter16) == 0 {
+		return "" // Fallback si falla la conversión
+	}
 
 	var ofn OPENFILENAME
 	fileBuf := make([]uint16, 260)
@@ -77,6 +83,10 @@ func openFileDialog(filterDesc, filterPat string) string {
 	ofn.nMaxFileTitle = uint32(len(titleBuf))
 	ofn.nFilterIndex = 1
 	ofn.flags = 0x00080000 | 0x00001000 | 0x00200000 // OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_LONGNAMES
+	// Inicializar campos adicionales a 0
+	ofn.pvReserved = 0
+	ofn.dwReserved = 0
+	ofn.FlagsEx = 0
 
 	comdlg32 := windows.NewLazySystemDLL("comdlg32.dll")
 	getOpenFileName := comdlg32.NewProc("GetOpenFileNameW")
@@ -84,7 +94,10 @@ func openFileDialog(filterDesc, filterPat string) string {
 	if ret == 0 {
 		return ""
 	}
-	return syscall.UTF16ToString(fileBuf)
+
+	// Buscar el terminador null en fileBuf para extraer la ruta correctamente
+	path := syscall.UTF16ToString(fileBuf)
+	return strings.TrimRight(path, "\x00") // Limpia terminadores extras si hay
 }
 
 func openExeDialog() string {
