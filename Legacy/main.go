@@ -100,12 +100,41 @@ func openFileDialog(filterDesc, filterPat string) string {
 	return strings.TrimRight(path, "\x00") // Limpia terminadores extras si hay
 }
 
+func getPathFromDialogOrInput(prompt string, filterDesc, filterPat string) string {
+	// Intenta el diálogo nativo primero
+	fmt.Println("Intentando abrir diálogo de selección...")
+	selectedPath := openFileDialog(filterDesc, filterPat)
+	if selectedPath != "" {
+		fmt.Printf("Archivo seleccionado vía diálogo: %s\n", selectedPath)
+		return selectedPath
+	}
+
+	// Fallback: Pide la ruta manualmente si el diálogo falla
+	fmt.Println("El diálogo no se abrió correctamente. Por favor, ingresa la ruta completa manualmente.")
+	fmt.Print(prompt)
+	var manualPath string
+	fmt.Scanln(&manualPath)
+	if manualPath == "" {
+		return ""
+	}
+
+	// Normaliza la ruta (convierte / a \ si es necesario, y verifica existencia)
+	manualPath = filepath.FromSlash(manualPath) // Convierte slashes a backslashes para Windows
+	if _, err := os.Stat(manualPath); err != nil {
+		showMessage("Error de Ruta", fmt.Sprintf("La ruta '%s' no existe o no es accesible.\nInténtalo de nuevo.", manualPath))
+		return ""
+	}
+
+	fmt.Printf("Ruta manual confirmada: %s\n", manualPath)
+	return manualPath
+}
+
 func openExeDialog() string {
-	return openFileDialog("Executable Files", "*.exe")
+	return getPathFromDialogOrInput("Ingresa la ruta completa del archivo .exe (ej: C:\\Path\\To\\miapp.exe): ", "Executable Files", "*.exe")
 }
 
 func openBatDialog() string {
-	return openFileDialog("Batch Files", "*.bat")
+	return getPathFromDialogOrInput("Ingresa la ruta completa del archivo .bat (ej: C:\\Path\\To\\miapp_RunAsInvoker.bat): ", "Batch Files", "*.bat")
 }
 
 func executeBat(batPath string) bool {
