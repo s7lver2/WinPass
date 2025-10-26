@@ -15,23 +15,21 @@ Multi-language README support
 
 <br>
 
-<a href="#requirements"><kbd> <br> Requirements <br> </kbd></a>&ensp;&ensp;
-<a href="#versions"><kbd> <br> Versions <br> </kbd></a>&ensp;&ensp;
-<a href="#compilation"><kbd> <br> Compilation <br> </kbd></a>&ensp;&ensp;
-<a href="#usage"><kbd> <br> Usage <br> </kbd></a>&ensp;&ensp;
-<a href="#troubleshooting"><kbd> <br> Troubleshooting <br> </kbd></a>&ensp;&ensp;
-<a href="CONTRIBUTING.md"><kbd> <br> Contributing <br> </kbd></a>&ensp;&ensp;
-<a href="https://github.com/yourusername/bat-generator/issues"><kbd> <br> Issues <br> </kbd></a>&ensp;&ensp;
-<a href="https://discord.gg/yourserver"><kbd> <br> Discord <br> </kbd></a>
+<a href="#requirements"><kbd> <br> Requirements <br> </kbd></a>&ensp;&ensp;
+<a href="#versions"><kbd> <br> Versions <br> </kbd></a>&ensp;&ensp;
+<a href="#compilation"><kbd> <br> Compilation <br> </kbd></a>&ensp;&ensp;
+<a href="#usage"><kbd> <br> Usage <br> </kbd></a>&ensp;&ensp;
+<a href="#troubleshooting"><kbd> <br> Troubleshooting <br> </kbd></a>&ensp;&ensp;
+<a href="CONTRIBUTING.md"><kbd> <br> Contributing <br> </kbd></a>&ensp;&ensp;
+<a href="https://github.com/yourusername/bat-generator/issues"><kbd> <br> Issues <br> </kbd></a>&ensp;&ensp;
+<a href="https://discord.gg/yourserver"><kbd> <br> Discord <br> </kbd></a>
 
 </div><br><br>
 
 <div align="center">
-  <div style="display: flex; flex-wrap: nowrap; justify-content: center;">
-    <img src="Source/assets/windows7.png" alt="Windows 7" style="width: 10%; margin: 10px;"/>
-    <img src="Source/assets/windows10.png" alt="Windows 10" style="width: 10%; margin: 10px;"/>
-    <img src="Source/assets/windows11.png" alt="Windows 11" style="width: 10%; margin: 10px;"/>
-  </div>
+  <span style="font-family: 'Hack Nerd Font'; font-size: 3em; margin: 10px;"> Windows 7</span>
+  <span style="font-family: 'Hack Nerd Font'; font-size: 3em; margin: 10px;"> Windows 10</span>
+  <span style="font-family: 'Hack Nerd Font'; font-size: 3em; margin: 10px;"> Windows 11</span>
 </div>
 
 Check this out for the full note:
