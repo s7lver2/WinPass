@@ -12,48 +12,35 @@ import (
 	"golang.org/x/sys/windows"
 )
 
-// Estructura OPENFILENAME expandida para filtros
+// Estructura OPENFILENAME para diálogos de archivo (versión mínima funcional)
 type OPENFILENAME struct {
-	lStructSize        uint32
-	hwndOwner          uintptr
-	hInstance          uintptr
-	lpstrFilter        *uint16
-	lpstrCustomFilter  *uint16
-	nMaxCustFilter     uint32
-	nFilterIndex       uint32
-	lpstrFile          *uint16
-	nMaxFile           uint32
-	lpstrFileTitle     *uint16
-	nMaxFileTitle      uint32
-	lpstrInitialDir    *uint16
-	lpstrTitle         *uint16
-	flags              uint32
-	nFileOffset        uint16
-	nFileExtension     uint16
-	lpstrDefExt        *uint16
-	lCustData          uintptr
-	lpfnHook           uintptr
-	lpTemplateName     *uint16
-	pvReserved         uintptr
-	dwReserved         uintptr
-	flagsEx            uint32
-}
-
-func utf16PtrFromString(s string) *uint16 {
-	b := make([]uint16, len(s)+1)
-	for i, r := range s {
-		if i < len(s) {
-			b[i] = uint16(r)
-		}
-	}
-	return &b[0]
+	lStructSize       uint32
+	hwndOwner         uintptr
+	hInstance         uintptr
+	lpstrFilter       *uint16
+	lpstrCustomFilter *uint16
+	nMaxCustFilter    uint32
+	nFilterIndex      uint32
+	lpstrFile         *uint16
+	nMaxFile          uint32
+	lpstrFileTitle    *uint16
+	nMaxFileTitle     uint32
+	lpstrInitialDir   *uint16
+	lpstrTitle        *uint16
+	flags             uint32
+	nFileOffset       uint16
+	nFileExtension    uint16
+	lpstrDefExt       *uint16
+	lCustData         uintptr
+	lpfnHook          uintptr
+	lpTemplateName    *uint16
 }
 
 func showMessage(title, message string) {
 	user32 := windows.NewLazySystemDLL("user32.dll")
 	messageBox := user32.NewProc("MessageBoxW")
-	titlePtr := utf16PtrFromString(title)
-	msgPtr := utf16PtrFromString(message)
+	titlePtr, _ := windows.UTF16PtrFromString(title)
+	msgPtr, _ := windows.UTF16PtrFromString(message)
 	messageBox.Call(0, uintptr(unsafe.Pointer(msgPtr)), uintptr(unsafe.Pointer(titlePtr)), 0)
 }
 
@@ -74,23 +61,20 @@ func createBatFile(exePath string) (bool, string) {
 	return true, batPath
 }
 
-func openFileDialog(filter string) string {
+func openFileDialog(filterDesc, filterPat string) string {
+	filterStr := filterDesc + "\x00" + filterPat + "\x00All Files\x00*.*\x00\x00"
+	filter16, _ := syscall.UTF16FromString(filterStr)
+
 	var ofn OPENFILENAME
 	fileBuf := make([]uint16, 260)
 	titleBuf := make([]uint16, 260)
-	filterBuf := make([]uint16, len(filter)*2+2) // Aproximado
-
-	// Convertir filtro a UTF16
-	copy(filterBuf, *(*[]uint16)(unsafe.Pointer(&filter)))
-	filterEnd := utf16PtrFromString("\0\0")
-	// Enlazar al final del filtro
 
 	ofn.lStructSize = uint32(unsafe.Sizeof(ofn))
+	ofn.lpstrFilter = &filter16[0]
 	ofn.lpstrFile = &fileBuf[0]
 	ofn.nMaxFile = uint32(len(fileBuf))
 	ofn.lpstrFileTitle = &titleBuf[0]
 	ofn.nMaxFileTitle = uint32(len(titleBuf))
-	ofn.lpstrFilter = &filterBuf[0]
 	ofn.nFilterIndex = 1
 	ofn.flags = 0x00080000 | 0x00001000 | 0x00200000 // OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_LONGNAMES
 
@@ -104,13 +88,11 @@ func openFileDialog(filter string) string {
 }
 
 func openExeDialog() string {
-	filter := "Executable Files\0*.exe\0All Files\0*.*\0\0"
-	return openFileDialog(filter)
+	return openFileDialog("Executable Files", "*.exe")
 }
 
 func openBatDialog() string {
-	filter := "Batch Files\0*.bat\0All Files\0*.*\0\0"
-	return openFileDialog(filter)
+	return openFileDialog("Batch Files", "*.bat")
 }
 
 func executeBat(batPath string) bool {
@@ -157,11 +139,10 @@ func main() {
 			// Preguntar si ejecutar
 			user32 := windows.NewLazySystemDLL("user32.dll")
 			messageBox := user32.NewProc("MessageBoxW")
-			msgPtr := utf16PtrFromString("¿Deseas ejecutar el BAT ahora?")
-			titlePtr := utf16PtrFromString("Ejecutar?")
-			yesNoPtr := utf16PtrFromString("Yes\0No\0")
+			msgPtr, _ := windows.UTF16PtrFromString("¿Deseas ejecutar el BAT ahora?")
+			titlePtr, _ := windows.UTF16PtrFromString("Ejecutar?")
 			ret, _, _ := messageBox.Call(0, uintptr(unsafe.Pointer(msgPtr)), uintptr(unsafe.Pointer(titlePtr)), 4) // MB_YESNO = 4
-			if ret == 6 { // IDYES
+			if ret == 6 {                                                                                          // IDYES
 				if executeBat(batPath) {
 					showMessage("Éxito", "Archivo .bat generado y ejecutado correctamente.")
 				}
