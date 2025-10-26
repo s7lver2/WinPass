@@ -1,4 +1,4 @@
-# Generador BAT (RunAsInvoker) - README
+# WinPass
 
 ![bat_generator_banner](Source/assets/bat_generator_banner.png)
 
@@ -15,25 +15,27 @@ Multi-language README support
 
 <br>
 
-<a href="#requirements"><kbd> <br> Requirements <br> </kbd></a>&ensp;&ensp;
-<a href="#versions"><kbd> <br> Versions <br> </kbd></a>&ensp;&ensp;
-<a href="#compilation"><kbd> <br> Compilation <br> </kbd></a>&ensp;&ensp;
-<a href="#usage"><kbd> <br> Usage <br> </kbd></a>&ensp;&ensp;
-<a href="#troubleshooting"><kbd> <br> Troubleshooting <br> </kbd></a>&ensp;&ensp;
-<a href="CONTRIBUTING.md"><kbd> <br> Contributing <br> </kbd></a>&ensp;&ensp;
-<a href="https://github.com/yourusername/bat-generator/issues"><kbd> <br> Issues <br> </kbd></a>&ensp;&ensp;
-<a href="https://discord.gg/yourserver"><kbd> <br> Discord <br> </kbd></a>
+<a href="#requirements"><kbd> <br>📋 Requirements <br> </kbd></a>&ensp;&ensp;
+<a href="#versions"><kbd> <br>🔄 Versions <br> </kbd></a>&ensp;&ensp;
+<a href="#compilation"><kbd> <br>⚙️ Compilation <br> </kbd></a>&ensp;&ensp;
+<a href="#usage"><kbd> <br>🚀 Usage <br> </kbd></a>&ensp;&ensp;
+<a href="#troubleshooting"><kbd> <br>🔧 Troubleshooting <br> </kbd></a>&ensp;&ensp;
+<a href="CONTRIBUTING.md"><kbd> <br>🤝 Contributing <br> </kbd></a>&ensp;&ensp;
+<a href="https://github.com/s7lver2/WinPass/issues"><kbd> <br>🐛 Issues <br> </kbd></a>&ensp;&ensp;
+<a href="https://github.com/s7lver2/WinPass/releases"><kbd> <br>💿 Releases<br> </kbd></a>
 
 </div><br><br>
 
 <div align="center">
-  <span style="font-family: 'Hack Nerd Font'; font-size: 3em; margin: 10px;"> Windows 7</span>
-  <span style="font-family: 'Hack Nerd Font'; font-size: 3em; margin: 10px;"> Windows 10</span>
-  <span style="font-family: 'Hack Nerd Font'; font-size: 3em; margin: 10px;"> Windows 11</span>
+  <img src="https://www.svgrepo.com/show/475985/windows-7-logo.svg" alt="Windows 7 Logo" width="50" height="50" />
+  <img src="https://www.svgrepo.com/show/475986/windows-10-logo.svg" alt="Windows 10 Logo" width="50" height="50" />
+  <img src="https://www.svgrepo.com/show/475987/windows-11-logo.svg" alt="Windows 11 Logo" width="50" height="50" />
+  <br>
+  <em>Windows 7 · Windows 10 · Windows 11</em>
 </div>
 
 Check this out for the full note:
-[Journey to BAT Generator and beyond](./BAT-Journey.md)
+[Check my latest projects!](https://github.com/s7lver2?tab=repositories)
 
 <br>
 
@@ -42,7 +44,10 @@ Check this out for the full note:
 
 ---
 
-Este proyecto es una aplicación CLI en Go para Windows que genera archivos `.bat` con compatibilidad `RunAsInvoker` para ejecutar ejecutables (`.exe`) sin elevación de privilegios UAC. Es compatible con **Windows 7 SP1+** (requiere KB2533623).
+Este proyecto es una aplicación GUI en Go para Windows que genera archivos `.bat` con compatibilidad `RunAsInvoker` para ejecutar ejecutables (`.exe`) sin elevación de privilegios UAC. Es compatible con gran parte de los sitemas operativos Windows, entre ellos **Windows 7 SP1+** (requiere KB2533623).
+
+> [!IMPORTANT]
+> No me hago responsable de los usos que se le puedan dar a esta herramienta, y solo apruebo su uso con regulación o sentido común
 
 > [!IMPORTANT]
 > Compila con Go 1.20.14 para soporte en Windows 7; versiones posteriores fallan por `bcryptprimitives.dll`.
@@ -50,7 +55,8 @@ Este proyecto es una aplicación CLI en Go para Windows que genera archivos `.ba
 > [!CAUTION]
 > El script modifica archivos en el directorio del `.exe`; haz backup si es necesario.
 
-Para compilar, necesitas Go 1.20.14 y `golang.org/x/sys@v0.7.0`.
+> [!CAUTION]
+> Para compilar la legacy version, necesitas Go 1.20.14 y `golang.org/x/sys@v0.7.0`.
 
 > [!TIP]
 > Usa `goenv` para manejar múltiples versiones de Go sin conflictos.
@@ -223,6 +229,6 @@ MIT License.
 
 ## Contribuciones
 
-Reporta issues en [GitHub](https://github.com/yourusername/bat-generator/issues). Pull requests bienvenidos.
+Reporta issues en [GitHub](https://github.com/s7lver2/WinPass/issues). Pull requests bienvenidos.
 
 ¡Gracias por usar Generador BAT! Si hay bugs, avísame. 🚀
