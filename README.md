@@ -90,7 +90,7 @@ cd Legacy  # Para Legacy (secundaria, Win7)
 
 ### Compilación de Main (Win10/11, Experimental Win8/7) - Principal
 
-Requiere MinGW para cross-compilación desde Linux/WSL (para GUI con Fyne).
+Requiere MinGW para cross-compilación desde Linux/WSL (para GUI con Fyne). Compilación nativa en Windows temporalmente no disponible.
 
 #### En WSL/Ubuntu
 1. Instala MinGW:
@@ -105,7 +105,8 @@ Requiere MinGW para cross-compilación desde Linux/WSL (para GUI con Fyne).
    echo 'command -v goenv >/dev/null || export PATH="$GOENV_ROOT/bin:$PATH"' >> ~/.bashrc
    echo 'eval "$(goenv init -)"' >> ~/.bashrc
    source ~/.bashrc
-   goenv install 1.20.14  # O versión reciente para Main
+   goenv install 1.20.14  # Para Legacy
+   goenv install $(goenv install -l | grep -v rc | tail -1)  # Versión más reciente para Main
    ```
 
 3. Navega al directorio padre:
@@ -120,20 +121,11 @@ Requiere MinGW para cross-compilación desde Linux/WSL (para GUI con Fyne).
 
 5. Compila (requiere CGO para Fyne/OpenGL):
    ```shell
-   goenv shell 1.20.14  # O versión reciente
+   goenv shell $(goenv install -l | grep -v rc | tail -1)  # Usa la versión más reciente
    GOOS=windows GOARCH=amd64 CC=x86_64-w64-mingw32-gcc CXX=x86_64-w64-mingw32-g++ CGO_ENABLED=1 go build -ldflags="-s -w" -o BAT_GUI.exe main.go
    ```
    - Para 32-bit: Cambia a `i686-w64-mingw32-gcc` y `GOARCH=386`.
    - **Experimental Win7/8**: Prueba con `-tags no_opengl` si hay issues gráficos, pero soporte no garantizado.
-
-#### En Windows Nativo (Main)
-```cmd
-cd C:\Users\NICKE\Desktop\Projects\WinPass
-set GOOS=windows
-set GOARCH=amd64
-set CGO_ENABLED=1
-go build -ldflags="-s -w" -o BAT_GUI.exe main.go
-```
 
 ### Compilación de Legacy (Win7) - Secundaria
 
@@ -234,3 +226,5 @@ MIT License.
 ## Contribuciones
 
 Reporta issues en [GitHub](https://github.com/yourusername/bat-generator/issues). Pull requests bienvenidos.
+
+¡Gracias por usar Generador BAT! Si hay bugs, avísame. 🚀
