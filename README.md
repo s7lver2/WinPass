@@ -1,4 +1,4 @@
-# WinPass
+# WinPass | Windows Admin Bypass
 
 ![bat_generator_banner](.github/ISSUE_TEMPLATE/animesher.com_pixel-pixel-gif-gif-2066449.gif)
 
@@ -27,11 +27,24 @@ Multi-language README support
 </div><br><br>
 
 <div align="center">
-  <img src="https://github.com/s7lver2/WinPass/blob/3b530240b16d67d05102609c0432d65640c73ffb/.github/ISSUE_TEMPLATE/w7.png" alt="Windows 7 Logo" width="50" height="50" />
-  <img src="https://github.com/s7lver2/WinPass/blob/3b530240b16d67d05102609c0432d65640c73ffb/.github/ISSUE_TEMPLATE/w10.png" alt="Windows 10 Logo" width="50" height="50" />
-  <img src=https://github.com/s7lver2/WinPass/blob/3b530240b16d67d05102609c0432d65640c73ffb/.github/ISSUE_TEMPLATE/w11.png" alt="Windows 11 Logo" width="50" height="50" />
-  <br>
-  <em>Windows 7 · Windows 10 · Windows 11</em>
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="https://github.com/s7lver2/WinPass/blob/3b530240b16d67d05102609c0432d65640c73ffb/.github/ISSUE_TEMPLATE/w7.png" alt="Windows 7 Logo" width="50" height="50" /><br>
+      <sub><strong>Windows 7</strong></sub>
+    </td>
+    <td align="center">
+      <img src="https://github.com/s7lver2/WinPass/blob/3b530240b16d67d05102609c0432d65640c73ffb/.github/ISSUE_TEMPLATE/w10.png" alt="Windows 10 Logo" width="50" height="50" /><br>
+      <sub><strong>Windows 10</strong></sub>
+    </td>
+    <td align="center">
+      <img src="https://github.com/s7lver2/WinPass/blob/3b530240b16d67d05102609c0432d65640c73ffb/.github/ISSUE_TEMPLATE/w11.png" alt="Windows 11 Logo" width="50" height="50" /><br>
+      <sub><strong>Windows 11</strong></sub>
+    </td>
+  </tr>
+</table>
+
 </div>
 
 Check this out for the full note:
@@ -44,23 +57,10 @@ Check this out for the full note:
 
 ---
 
-Este proyecto es una aplicación GUI en Go para Windows que genera archivos `.bat` con compatibilidad `RunAsInvoker` para ejecutar ejecutables (`.exe`) sin elevación de privilegios UAC. Es compatible con gran parte de los sitemas operativos Windows, entre ellos **Windows 7 SP1+** (requiere KB2533623).
+Este proyecto es una aplicación GUI en Go para Windows que genera archivos `.bat` con compatibilidad `RunAsInvoker` para ejecutar ejecutables (`.exe`) sin elevación de privilegios UAC. Es compatible con gran parte de los sitemas operativos Windows, entre ellos **windows 7, windows 10, y windows 11** (requesitos mínimos: Windows 7 KB2533623).
 
 > [!IMPORTANT]
 > No me hago responsable de los usos que se le puedan dar a esta herramienta, y solo apruebo su uso con regulación o sentido común
-
-> [!IMPORTANT]
-> Compila con Go 1.20.14 para soporte en Windows 7; versiones posteriores fallan por `bcryptprimitives.dll`.
-
-> [!CAUTION]
-> El script modifica archivos en el directorio del `.exe`; haz backup si es necesario.
-
-> [!CAUTION]
-> Para compilar la legacy version, necesitas Go 1.20.14 y `golang.org/x/sys@v0.7.0`.
-
-> [!TIP]
-> Usa `goenv` para manejar múltiples versiones de Go sin conflictos.
-
 ---
 
 <a id="versions"></a>
@@ -68,13 +68,12 @@ Este proyecto es una aplicación GUI en Go para Windows que genera archivos `.ba
 
 ---
 
-Este repositorio incluye tres versiones del proyecto, cada una optimizada para diferentes entornos y compatibilidades. La **versión Main** es la principal, recomendada para uso general en sistemas modernos.
+Este repositorio incluye dos versiones del proyecto, cada una optimizada para diferentes entornos y compatibilidades. Recomendamos personalmente el uso de la version **Main**
 
-1. **Main (directorio padre: `../`)**: Versión GUI con Fyne (interfaz gráfica moderna con pestañas). Soporta **Windows 10/11** de forma estable. Soporte experimental para **Windows 8/7** con aceleración gráfica (OpenGL/DirectX). Requiere MinGW para cross-compilación desde Linux/WSL. Ideal para usuarios que prefieren una interfaz visual intuitiva.
+1. **Main (directorio padre: `../`)**: Versión GUI con Fyne (interfaz gráfica moderna con pestañas). Soporta **Windows 10/11** de forma estable. Soporte experimental para **Windows 8/7**, pero con requesito de aceleracion gráfica (OpenGL/DirectX). Ideal para usuarios que prefieren una interfaz visual intuitiva.
 
 2. **Legacy (directorio actual: `Legacy/`)**: Versión CLI secundaria con diálogos nativos de Windows y fallback manual. Soporta **Windows 7 SP1+** de forma nativa. No requiere MinGW. Útil para sistemas legacy o entornos sin GUI.
 
-3. **Experimental CLI (si aplica, o integra en Main)**: Variante CLI de la Main, con dependencias de Fyne pero sin GUI. Similar soporte a Main, pero más ligera.
 
 Para navegar:
 ```shell
@@ -92,14 +91,23 @@ cd Legacy  # Para Legacy (secundaria, Win7)
 
 ---
 
+> [!IMPORTANT]
+> Compila con Go 1.20.14 para soporte en Windows 7; versiones posteriores fallan por `bcryptprimitives.dll`.
+
+> [!CAUTION]
+> Para compilar la legacy version, necesitas Go 1.20.14 y `golang.org/x/sys@v0.7.0`.
+
+> [!TIP]
+> Usa `goenv` para manejar múltiples versiones de Go sin conflictos.
+
 ### Compilación de Main (Win10/11, Experimental Win8/7) - Principal
 
-Requiere MinGW para cross-compilación desde Linux/WSL (para GUI con Fyne). Compilación nativa en Windows temporalmente no disponible.
+Se recomienda encarecidamente compilar desde alguna distribución de linux, en el caso de windows, usa WSL [mas info aqui](https://google.com)
 
-#### En WSL/Ubuntu
+#### Preinstalación
 1. Instala MinGW:
    ```shell
-   sudo apt install gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 gcc-mingw-w64-i686 g++-mingw-w64-i686
+   sudo apt update && sudo apt install -y gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 gcc-mingw-w64-i686 g++-mingw-w64-i686 python3 git curl build-essential
    ```
 
 2. Instala goenv:
@@ -109,16 +117,17 @@ Requiere MinGW para cross-compilación desde Linux/WSL (para GUI con Fyne). Comp
    echo 'command -v goenv >/dev/null || export PATH="$GOENV_ROOT/bin:$PATH"' >> ~/.bashrc
    echo 'eval "$(goenv init -)"' >> ~/.bashrc
    source ~/.bashrc
-   goenv install 1.20.14  # Para Legacy
    goenv install $(goenv install -l | grep -v rc | tail -1)  # Versión más reciente para Main
+   goenv install 1.20.14  # Para Legacy
    ```
+#### Compilación Main
 
 3. Navega al directorio padre:
    ```shell
    cd ~/WinPass  # Directorio de Main
    ```
 
-4. Prepara (usa su propio go.mod):
+4. Prepara Dependencias:
    ```shell
    go mod tidy  # Resuelve dependencias de Fyne
    ```
@@ -131,45 +140,25 @@ Requiere MinGW para cross-compilación desde Linux/WSL (para GUI con Fyne). Comp
    - Para 32-bit: Cambia a `i686-w64-mingw32-gcc` y `GOARCH=386`.
    - **Experimental Win7/8**: Prueba con `-tags no_opengl` si hay issues gráficos, pero soporte no garantizado.
 
-### Compilación de Legacy (Win7) - Secundaria
-
-#### En WSL/Ubuntu
-1. Instala dependencias:
-   ```shell
-   sudo apt update && sudo apt install -y git curl build-essential
-   ```
-
-2. Instala goenv (si no lo tienes):
-   ```shell
-   # (Comandos de goenv como arriba)
-   goenv install 1.20.14
-   ```
+### Compilación de Legacy
 
 3. Navega y prepara:
    ```shell
+   goenv shell 1.20.14 # activa goenv 1.20.14
    cd ~/WinPass/Legacy
-   go mod init bat-cli-app
+   go mod init WinPass
    go get golang.org/x/sys@v0.7.0
    ```
 
 4. Compila:
-   ```shell
-   goenv shell 1.20.14
+   ```shel
    GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w" -o TEST.exe main.go
    ```
 
-#### En Windows Nativo (Legacy)
-```cmd
-cd C:\Users\NICKE\Desktop\Projects\WinPass\Legacy
-go mod init bat-cli-app
-go get golang.org/x/sys@v0.7.0
-set GOOS=windows
-set GOARCH=amd64
-set CGO_ENABLED=0
-go build -ldflags="-s -w" -o TEST.exe main.go
-```
-
 **Binario Resultante:** `BAT_GUI.exe` (Main, ~10-15 MB con Fyne) o `TEST.exe` (Legacy, ~2-3 MB).
+
+> [!NOTE]
+> Para recuperar los binarios ya compilados, en el caso de que se use **WSL**, se recomienda usar `python -m http.server 80` para poder moverlos facilmente.
 
 ---
 
@@ -179,7 +168,7 @@ go build -ldflags="-s -w" -o TEST.exe main.go
 ---
 
 ### Uso de Main (GUI) - Principal
-Ejecuta `./BAT_GUI.exe` para abrir la interfaz gráfica con pestañas (Generador y Ejecutar). Selecciona archivos vía diálogos o manual. Recomendado para uso diario en Win10/11.
+Ejecuta `./Winpass.exe` para abrir la interfaz gráfica con pestañas (Generador y Ejecutar). Selecciona archivos vía diálogos o manual. Recomendado para uso diario en Win10/11.
 
 ### Uso de Legacy (CLI) - Secundaria
 1. Ejecuta:
@@ -231,4 +220,4 @@ MIT License.
 
 Reporta issues en [GitHub](https://github.com/s7lver2/WinPass/issues). Pull requests bienvenidos.
 
-¡Gracias por usar Generador BAT! Si hay bugs, avísame. 🚀
+¡Gracias por usar WinPass! Si hay bugs, abre una Issue. 🚀
