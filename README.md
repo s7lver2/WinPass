@@ -1,6 +1,6 @@
 # WinPass
 
-![bat_generator_banner](Source/assets/bat_generator_banner.png)
+![bat_generator_banner](.github/ISSUE_TEMPLATE/animesher.com_pixel-pixel-gif-gif-2066449.gif)
 
 <!--
 Multi-language README support
@@ -27,9 +27,9 @@ Multi-language README support
 </div><br><br>
 
 <div align="center">
-  <img src="https://www.svgrepo.com/show/475985/windows-7-logo.svg" alt="Windows 7 Logo" width="50" height="50" />
-  <img src="https://www.svgrepo.com/show/475986/windows-10-logo.svg" alt="Windows 10 Logo" width="50" height="50" />
-  <img src="https://www.svgrepo.com/show/475987/windows-11-logo.svg" alt="Windows 11 Logo" width="50" height="50" />
+  <img src="https://github.com/s7lver2/WinPass/blob/3b530240b16d67d05102609c0432d65640c73ffb/.github/ISSUE_TEMPLATE/w7.png" alt="Windows 7 Logo" width="50" height="50" />
+  <img src="https://github.com/s7lver2/WinPass/blob/3b530240b16d67d05102609c0432d65640c73ffb/.github/ISSUE_TEMPLATE/w10.png" alt="Windows 10 Logo" width="50" height="50" />
+  <img src=https://github.com/s7lver2/WinPass/blob/3b530240b16d67d05102609c0432d65640c73ffb/.github/ISSUE_TEMPLATE/w11.png" alt="Windows 11 Logo" width="50" height="50" />
   <br>
   <em>Windows 7 · Windows 10 · Windows 11</em>
 </div>
