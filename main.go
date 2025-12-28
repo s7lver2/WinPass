@@ -20,6 +20,9 @@ import (
 )
 
 const VERSION = "WinPass v3.1"
+const DEBUG = false
+const FEATURE_A = false
+const FEATURE_B = false
 
 // Constante que define el contenido de la plantilla del archivo .bat
 // Usamos %%~dp0 para escapar el % en Go y que el archivo final contenga %~dp0
@@ -165,6 +168,11 @@ func createExecutionTab(w fyne.Window, pathEntry *widget.Entry, executeButton *w
 }
 
 func main() {
+	// debug Patcher
+	fmt.Println(DEBUG)
+	fmt.Println(FEATURE_A)
+	fmt.Println(FEATURE_B)
+
 	a := app.New()
 	w := a.NewWindow(VERSION)
 	w.Resize(fyne.NewSize(750, 400))

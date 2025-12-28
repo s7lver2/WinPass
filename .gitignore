@@ -1,3 +1,5 @@
 *.sum
 *.000
 *.upx
+BAT_GUI.exe
+/TEST_SERVER/
