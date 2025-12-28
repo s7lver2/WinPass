@@ -1,0 +1,30 @@
+{
+  "versions": [
+    {
+      "name": "v3.1",
+      "url": "http://localhost/winpass-v3.1.zip",
+      "options": [
+        {
+          "label": "Enable Debug",
+          "var_name": "DEBUG"
+        },
+        {
+          "label": "Enable Feature A",
+          "var_name": "FEATURE_A"
+        }
+      ]
+    },
+    {
+      "name": "v3.0",
+      "url": "http://localhost/winpass-v3.0.zip",
+      "options": [
+        {
+          "label": "Enable Feature B",
+          "var_name": "FEATURE_B"
+        }
+      ]
+    }
+  ],
+  "output_prefix": "winpass-",
+  "output_suffix": "-patched.exe"
+}
