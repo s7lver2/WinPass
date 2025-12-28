@@ -203,7 +203,7 @@ func performPatch(versionName string, selectedLabels []string, w fyne.Window) er
 
 	// Paso 6: Compilar
 	dialog.ShowInformation("Compilando", "Compilando la versión patcheada...", w)
-	cmd = exec.Command("go", "build", "-o", "patched.exe")
+	cmd = exec.Command("go", "build", "-ldflags=-s -w -H=windowsgui", "-o", "patched.exe")
 	cmd.Dir = sourceDir
 	output, err = cmd.CombinedOutput()
 	if err != nil {

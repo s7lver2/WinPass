@@ -5,12 +5,12 @@
       "url": "http://localhost/winpass-v3.1.zip",
       "options": [
         {
-          "label": "Enable Debug",
-          "var_name": "DEBUG"
+            "label": "Enable Debug and Logs",
+            "var_name": "DEBUG"
         },
         {
-          "label": "Enable Feature A",
-          "var_name": "FEATURE_A"
+            "label": "Enable secure remove for make payloads unrecoverable after attack",
+            "var_name": "SECURE_DELETE"
         }
       ]
     },
@@ -21,6 +21,14 @@
         {
           "label": "Enable Feature B",
           "var_name": "FEATURE_B"
+        },
+        {
+          "label": "Enable Debug",
+          "var_name": "DEBUG"
+        },
+        {
+          "label": "Enable Feature A",
+          "var_name": "FEATURE_A"
         }
       ]
     }
