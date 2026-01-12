@@ -56,34 +56,31 @@ Check this out for the full note:
 <img src="https://readme-typing-svg.herokuapp.com?font=Lexend+Giga&size=25&pause=1000&color=CCA9DD&vCenter=true&width=435&height=25&lines=REQUIREMENTS" width="450"/>
 
 ---
-
-Este proyecto es una aplicación GUI en Go para Windows que genera archivos `.bat` con compatibilidad `RunAsInvoker` para ejecutar ejecutables (`.exe`) sin elevación de privilegios UAC. Es compatible con gran parte de los sitemas operativos Windows, entre ellos **windows 7, windows 10, y windows 11** (requesitos mínimos: Windows 7 KB2533623).
+This is a GUI app builded with Go for Windows than generates ´.bat´ files with the compatibility layer ´RunAsInvoker´ for run executables ´.exe´ without elevating privileadges UAC. It is compatible with almost every windows system, like **Windows 7**, **Windows 10** and **Windows 11**.
 
 > [!IMPORTANT]
-> No me hago responsable de los usos que se le puedan dar a esta herramienta, y solo apruebo su uso con regulación o sentido común
+> I am not responsible for the uses of this tool, and if you do something ilegal or bad with it, it is your responasbility
 ---
 
 <a id="versions"></a>
 <img src="https://readme-typing-svg.herokuapp.com?font=Lexend+Giga&size=25&pause=1000&color=CCA9DD&vCenter=true&width=435&height=25&lines=VERSIONS" width="450"/>
 
 ---
+This repository includes 2 versions of the project, each one of them optimized for diferent enviroments and compabilities. We strongly recommend the usage of the **Main** version
 
-Este repositorio incluye dos versiones del proyecto, cada una optimizada para diferentes entornos y compatibilidades. Recomendamos personalmente el uso de la version **Main**
+1. **Main (parent directory: `../`)** GUI version made with Fyne (modern UI with tabs). Stable support for **Windows 10/11**. experimental support for **Windows 7/8**, but with graphical aceleration requirement (OpenGL/DirectX). Ideal for new users than dont really know too much about it
 
-1. **Main (directorio padre: `../`)**: Versión GUI con Fyne (interfaz gráfica moderna con pestañas). Soporta **Windows 10/11** de forma estable. Soporte experimental para **Windows 8/7**, pero con requesito de aceleracion gráfica (OpenGL/DirectX). Ideal para usuarios que prefieren una interfaz visual intuitiva.
-
-2. **Legacy (directorio actual: `Legacy/`)**: Versión CLI secundaria con diálogos nativos de Windows y fallback manual. Soporta **Windows 7 SP1+** de forma nativa. No requiere MinGW. Útil para sistemas legacy o entornos sin GUI.
+2. **Legacy (actual directory: `Legacy/`)**: CLI version with native Windows dialogs and manual fallback. It supports every windows from **Windows 7 SP1+** without dependences requirements, like MinGW. Usefull for legacy or old systems without GUI
 
 
-Para navegar:
+Directories:
 ```shell
-cd ..      # Para Main (principal, Win10/11)
-cd Legacy  # Para Legacy (secundaria, Win7)
+cd ..      # For Main (main, Win10/11)
+cd Legacy  # For Legacy (secondary, Win7)
 ```
 
 > [!NOTE]
-> La versión Main usa su propio `go.mod` independiente. Compila por separado para evitar conflictos de dependencias.
-
+> The main version uses its own `go.mod` file. Compile separately for dont have dependences conflicts
 ---
 
 <a id="compilation"></a>
@@ -92,10 +89,10 @@ cd Legacy  # Para Legacy (secundaria, Win7)
 ---
 
 > [!IMPORTANT]
-> Compila con Go 1.20.14 para soporte en Windows 7; versiones posteriores fallan por `bcryptprimitives.dll`.
+> Compilate with Go 1.20.14 for windows 7 support (newer versions fail because `bcryptprimitives.dll`).
 
 > [!CAUTION]
-> Para compilar la legacy version, necesitas Go 1.20.14 y `golang.org/x/sys@v0.7.0`.
+> for compile la legacy version, necesitas Go 1.20.14 y `golang.org/x/sys@v0.7.0`.
 
 > [!TIP]
 > Usa `goenv` para manejar múltiples versiones de Go sin conflictos.
